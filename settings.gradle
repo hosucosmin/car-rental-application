@@ -1,0 +1,3 @@
+rootProject.name = 'car-rental'
+include 'car-rental-api'
+include 'car-rental-app'

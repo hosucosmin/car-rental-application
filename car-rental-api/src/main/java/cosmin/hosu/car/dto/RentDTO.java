@@ -1,0 +1,32 @@
+package cosmin.hosu.car.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Data
+public class RentDTO {
+
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
+	@NotBlank
+	private String driverName;
+	@NotBlank
+	private String driverEmail;
+	@NotBlank
+	private String driverPhone;
+	@NotBlank
+	private String carLicensePlate;
+	@NotBlank
+	private String carBrand;
+	private String rentExtId;
+	private double duration;
+	private String amountDue;
+}
