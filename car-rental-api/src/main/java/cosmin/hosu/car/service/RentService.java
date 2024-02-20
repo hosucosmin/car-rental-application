@@ -17,4 +17,6 @@ public interface RentService {
 	List<RentDTO> getCurrentRents();
 
 	List<RentDTO> getFinishedRents();
+
+	RentDTO getRentByExtId(String extId);
 }

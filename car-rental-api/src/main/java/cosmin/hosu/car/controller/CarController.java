@@ -2,6 +2,8 @@ package cosmin.hosu.car.controller;
 
 import cosmin.hosu.car.dto.CarDTO;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,10 @@ public interface CarController {
 
 	@GetMapping
 	List<CarDTO> getCars();
+
+	@GetMapping("/{extId}")
+	CarDTO getCarByExtId(@NotBlank @PathVariable("extId") String extId);
+
 	@PostMapping(value = "/register")
 	ResponseEntity<String> registerNewCar(@Valid @RequestBody CarDTO carDto);
 

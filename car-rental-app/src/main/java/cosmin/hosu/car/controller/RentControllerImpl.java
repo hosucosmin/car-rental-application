@@ -3,7 +3,9 @@ package cosmin.hosu.car.controller;
 import cosmin.hosu.car.dto.RentDTO;
 import cosmin.hosu.car.dto.RentRequestDTO;
 import cosmin.hosu.car.service.RentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,19 +13,22 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "api/v1/rents")
+@RequestMapping(path = "/api/v1/rents")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RentControllerImpl implements RentController {
 	private final RentService rentService;
-
-	@Autowired
-	public RentControllerImpl(RentService rentService) {
-		this.rentService = rentService;
-	}
 
 	@GetMapping
 	@Override
 	public List<RentDTO> getCurrentRents() {
 		return rentService.getCurrentRents();
+	}
+
+	@GetMapping("/{extId}")
+	@Override
+	@Cacheable(value = "rent_cache")
+	public RentDTO getRentByExtId(@PathVariable("extId") String extId) {
+		return rentService.getRentByExtId(extId);
 	}
 
 	@GetMapping("/finished")

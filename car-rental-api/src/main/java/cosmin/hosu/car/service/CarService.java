@@ -13,4 +13,6 @@ public interface CarService {
 	ResponseEntity<String> updateCar(CarDTO carDTO);
 
 	void deleteCar(CarDTO carDTO);
+
+	CarDTO getCarByExtId(String extId);
 }

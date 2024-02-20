@@ -5,6 +5,7 @@ import cosmin.hosu.car.dto.RentRequestDTO;
 import cosmin.hosu.car.entities.Car;
 import cosmin.hosu.car.entities.Driver;
 import cosmin.hosu.car.entities.Rent;
+import cosmin.hosu.car.excetion.RentNotFoundException;
 import cosmin.hosu.car.mapper.ApplicationMapper;
 import cosmin.hosu.car.repository.CarRepository;
 import cosmin.hosu.car.repository.DriverRepository;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -36,13 +38,12 @@ public class RentalServiceImpl implements RentService {
     public ResponseEntity<String> registerNewEntry(RentRequestDTO rentDTO) {
         Optional<Driver> driver = driverRepository.findByNameEmailAndPhone(rentDTO.getDriverName(), rentDTO.getDriverEmail(), rentDTO.getDriverPhone());
         Optional<Car> car = carRepository.findByLicensePlate(rentDTO.getCarLicensePlate());
-        if (driver.isPresent() && car.isPresent()) {
-            if (!isAnotherRentInProgress(car.get(), driver.get())) {
+        if (driver.isPresent() && car.isPresent() && (!isAnotherRentInProgress(car.get(), driver.get()))) {
                 saveNewRent(driver.get(), car.get());
                 return ok("Success");
-            }
         }
-        return internalServerError().body("There has been an error");
+        return internalServerError().body("There has been an error in creating a new rent." +
+                " Please check the driver or car details or if there is another rent in progress.");
     }
 
     @Override
@@ -54,7 +55,7 @@ public class RentalServiceImpl implements RentService {
             saveFinishedRide(rent);
             return ok("Success");
         }
-        return internalServerError().body("There has been an error");
+        return internalServerError().body("There has been an error in finishing the ride. Please check the rent details.");
     }
 
     @Override
@@ -69,7 +70,7 @@ public class RentalServiceImpl implements RentService {
         return rentalRepository.findAllNotEnded()
                 .map(rents -> rents.stream()
                         .map(mapper::mapDto)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .orElse(Collections.emptyList());
     }
 
@@ -78,8 +79,19 @@ public class RentalServiceImpl implements RentService {
         return rentalRepository.findAllFinishedRents()
                 .map(rents -> rents.stream()
                         .map(mapper::mapDto)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public RentDTO getRentByExtId(String extId) {
+        Rent rent = rentalRepository.findByExtId(extId).orElse(null);
+
+        if (rent == null) {
+            throw new RentNotFoundException("Couldn't find any rent with the provided external id.");
+        }
+
+        return mapper.mapDto(rent);
     }
 
     private boolean isAnotherRentInProgress(Car car, Driver driver) {

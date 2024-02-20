@@ -58,7 +58,10 @@ subprojects {
 		implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.2'
 		implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.3.Final'
 		implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.3.Final'
+		testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.2.2'
 		annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.3.Final'
+		implementation 'org.springframework.boot:spring-boot-starter-cache:3.2.2'
+		implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 	}
 
 	test {

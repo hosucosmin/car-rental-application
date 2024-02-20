@@ -2,6 +2,9 @@ package cosmin.hosu.car.service;
 
 import cosmin.hosu.car.dto.CarDTO;
 import cosmin.hosu.car.entities.Car;
+import cosmin.hosu.car.entities.Rent;
+import cosmin.hosu.car.excetion.CarNotFoundException;
+import cosmin.hosu.car.excetion.RentNotFoundException;
 import cosmin.hosu.car.mapper.ApplicationMapper;
 import cosmin.hosu.car.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +29,15 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDTO> getCars() {
-        return carRepository.findAll().stream().map(mapper::mapDto).collect(Collectors.toList());
+        return carRepository.findAll().stream().map(mapper::mapDto).toList();
+    }
+
+    @Override
+    public CarDTO getCarByExtId(String extId) {
+        return Optional.ofNullable(extId)
+                .flatMap(carRepository::findByExtId)
+                .map(mapper::mapDto)
+                .orElseThrow(() -> new CarNotFoundException("Couldn't find any car with the provided external id."));
     }
 
     @Override
@@ -37,7 +49,7 @@ public class CarServiceImpl implements CarService {
             carRepository.save(car);
             return ok("Success");
         }
-        return internalServerError().body("There has been an error.");
+        return internalServerError().body("The car is already registered. Please try again!");
     }
 
     @Override
@@ -45,7 +57,7 @@ public class CarServiceImpl implements CarService {
         Car carEntity = Optional.ofNullable(carDTO.getLicensePlate())
                 .flatMap(carRepository::findByLicensePlate)
                 .map(car -> updateCar(car, carDTO))
-                .orElse(null);
+                .orElseThrow(() -> new CarNotFoundException("Couldn't find any car with the provided license plate."));
 
         if (carEntity != null) {
             return ResponseEntity.ok("Successfully updated driver entity");
@@ -54,18 +66,18 @@ public class CarServiceImpl implements CarService {
         return internalServerError().body("There has been an error");
     }
 
-    private Car updateCar(Car car, CarDTO carDTO) {
-       car.setBrand(carDTO.getBrand());
-       car.setPrice(carDTO.getPrice());
-       car.setModel(carDTO.getModel());
-       car.setLicensePlate(carDTO.getLicensePlate());
-       car.setYear(carDTO.getYear());
-       return carRepository.save(car);
-    }
-
     @Override
     public void deleteCar(CarDTO carDTO) {
         Optional<Car> car = carRepository.findByExtId(carDTO.getExtId());
         car.ifPresent(carRepository::delete);
+    }
+
+    private Car updateCar(Car car, CarDTO carDTO) {
+        car.setBrand(carDTO.getBrand());
+        car.setPrice(carDTO.getPrice());
+        car.setModel(carDTO.getModel());
+        car.setLicensePlate(carDTO.getLicensePlate());
+        car.setYear(carDTO.getYear());
+        return carRepository.save(car);
     }
 }

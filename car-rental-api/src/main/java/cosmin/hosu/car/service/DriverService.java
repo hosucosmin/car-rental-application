@@ -13,4 +13,6 @@ public interface DriverService {
 	ResponseEntity<String> updateDriver(DriverDTO driverDTO);
 
 	void deleteDriver(DriverDTO json);
+
+	DriverDTO getDriverByExtId(String extId);
 }

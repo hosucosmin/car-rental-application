@@ -2,6 +2,9 @@ package cosmin.hosu.car.service;
 
 import cosmin.hosu.car.dto.DriverDTO;
 import cosmin.hosu.car.entities.Driver;
+import cosmin.hosu.car.entities.Rent;
+import cosmin.hosu.car.excetion.DriverNotFoundException;
+import cosmin.hosu.car.excetion.RentNotFoundException;
 import cosmin.hosu.car.mapper.ApplicationMapper;
 import cosmin.hosu.car.repository.DriverRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +60,17 @@ public class DriverServiceImpl implements DriverService {
     public void deleteDriver(DriverDTO driverDTO) {
         Optional<Driver> driver = driverRepository.findByExtId(driverDTO.getExtId());
         driver.ifPresent(driverRepository::delete);
+    }
+
+    @Override
+    public DriverDTO getDriverByExtId(String extId) {
+        Driver driver = driverRepository.findByExtId(extId).orElse(null);
+
+        if (driver == null) {
+            throw new DriverNotFoundException("Couldn't find any driver with the provided external id.");
+        }
+
+        return mapper.mapDto(driver);
     }
 
     private Driver updateDriver(Driver driver, DriverDTO driverDTO) {
