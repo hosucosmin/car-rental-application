@@ -1,6 +1,7 @@
 package cosmin.hosu.car.controller;
 
 import cosmin.hosu.car.dto.CarDTO;
+import cosmin.hosu.car.dto.LicensePlateChangeRequest;
 import cosmin.hosu.car.service.CarServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,13 @@ public class CarControllerImpl implements CarController {
 
 	@PutMapping("/update")
 	@Override
-	public ResponseEntity<String> updateCar(@RequestBody CarDTO carDTO) {
+	public ResponseEntity<String> updateCarLicensePlate(@RequestBody CarDTO carDTO) {
 		return carService.updateCar(carDTO);
+	}
+
+	@Override
+	public ResponseEntity<String> updateCarLicensePlate(LicensePlateChangeRequest licensePlateChangeRequest, String extId) {
+		return carService.updateCarLicensePlate(licensePlateChangeRequest, extId);
 	}
 
 	@DeleteMapping("/delete/{extId}")

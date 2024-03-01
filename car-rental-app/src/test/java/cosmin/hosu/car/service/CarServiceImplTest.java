@@ -1,6 +1,7 @@
 package cosmin.hosu.car.service;
 
 import cosmin.hosu.car.dto.CarDTO;
+import cosmin.hosu.car.dto.LicensePlateChangeRequest;
 import cosmin.hosu.car.entities.Car;
 import cosmin.hosu.car.excetion.CarNotFoundException;
 import cosmin.hosu.car.mapper.ApplicationMapper;
@@ -25,6 +26,7 @@ class CarServiceImplTest {
 	private static final String EXT_ID = "1";
 
 	private final CarDTO carDTO = createCarDTO();
+	private final LicensePlateChangeRequest licensePlateChangeRequest = createLicensePlateRequest();
 	private final Car car = createCar();
 
 	@InjectMocks
@@ -105,6 +107,23 @@ class CarServiceImplTest {
 	}
 
 	@Test
+	void whenUpdateCarLicensePlate_expectCarLicensePlateIsUpdated() {
+		when(carRepository.findByExtId(EXT_ID)).thenReturn(Optional.of(car));
+		when(carRepository.save(car)).thenReturn(car);
+
+		carService.updateCarLicensePlate(licensePlateChangeRequest, EXT_ID);
+
+		verify(carRepository).save(car);
+	}
+
+	@Test
+	void whenUpdateCarLicensePlate_andCarNotFound_expectCarLicensePlateIsNotUpdated() {
+		when(carRepository.findByExtId(EXT_ID)).thenReturn(Optional.empty());
+
+		assertThrows(CarNotFoundException.class, () -> carService.updateCarLicensePlate(licensePlateChangeRequest, EXT_ID));
+	}
+
+	@Test
 	void whenDeleteCar_expectCarIsDeleted() {
 		when(carRepository.findByExtId(EXT_ID)).thenReturn(Optional.of(car));
 
@@ -122,7 +141,7 @@ class CarServiceImplTest {
 		verify(carRepository, times(0)).delete(car);
 	}
 
-	private static CarDTO createCarDTO() {
+	private CarDTO createCarDTO() {
 		return CarDTO
 				.builder()
 				.licensePlate(LICENSE_PLATE)
@@ -130,7 +149,14 @@ class CarServiceImplTest {
 				.build();
 	}
 
-	private static Car createCar() {
+	private LicensePlateChangeRequest createLicensePlateRequest() {
+		return LicensePlateChangeRequest
+				.builder()
+				.newLicensePlate(LICENSE_PLATE)
+				.build();
+	}
+
+	private Car createCar() {
 		return Car.builder()
 				.licensePlate(LICENSE_PLATE)
 				.extId(EXT_ID)

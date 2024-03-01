@@ -1,10 +1,9 @@
 package cosmin.hosu.car.service;
 
 import cosmin.hosu.car.dto.CarDTO;
+import cosmin.hosu.car.dto.LicensePlateChangeRequest;
 import cosmin.hosu.car.entities.Car;
-import cosmin.hosu.car.entities.Rent;
 import cosmin.hosu.car.excetion.CarNotFoundException;
-import cosmin.hosu.car.excetion.RentNotFoundException;
 import cosmin.hosu.car.mapper.ApplicationMapper;
 import cosmin.hosu.car.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.internalServerError;
 import static org.springframework.http.ResponseEntity.ok;
@@ -38,6 +35,15 @@ public class CarServiceImpl implements CarService {
                 .flatMap(carRepository::findByExtId)
                 .map(mapper::mapDto)
                 .orElseThrow(() -> new CarNotFoundException("Couldn't find any car with the provided external id."));
+    }
+
+    @Override
+    public ResponseEntity<String> updateCarLicensePlate(LicensePlateChangeRequest licensePlateChangeRequest, String extId) {
+        Car car = carRepository.findByExtId(extId)
+                .orElseThrow(() -> new CarNotFoundException("Couldn't find any car with the provided external id."));
+        car.setLicensePlate(licensePlateChangeRequest.getNewLicensePlate());
+        carRepository.save(car);
+        return ok("Successfully updated the car entity.");
     }
 
     @Override
