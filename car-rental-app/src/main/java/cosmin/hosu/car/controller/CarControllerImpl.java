@@ -39,12 +39,13 @@ public class CarControllerImpl implements CarController {
 
 	@PutMapping("/update")
 	@Override
-	public ResponseEntity<String> updateCarLicensePlate(@RequestBody CarDTO carDTO) {
+	public ResponseEntity<String> updateCar(@RequestBody CarDTO carDTO) {
 		return carService.updateCar(carDTO);
 	}
 
+	@PatchMapping("/update/{extId}")
 	@Override
-	public ResponseEntity<String> updateCarLicensePlate(LicensePlateChangeRequest licensePlateChangeRequest, String extId) {
+	public ResponseEntity<String> updateCarLicensePlate(@RequestBody LicensePlateChangeRequest licensePlateChangeRequest, @PathVariable String extId) {
 		return carService.updateCarLicensePlate(licensePlateChangeRequest, extId);
 	}
 

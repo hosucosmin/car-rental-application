@@ -22,7 +22,7 @@ public interface CarController {
 	ResponseEntity<String> registerNewCar(@Valid @RequestBody CarDTO carDto);
 
 	@PutMapping("/update")
-	ResponseEntity<String> updateCarLicensePlate(@Valid @RequestBody CarDTO carDTO);
+	ResponseEntity<String> updateCar(@Valid @RequestBody CarDTO carDTO);
 
 	@PatchMapping("/update/{extId}")
 	ResponseEntity<String> updateCarLicensePlate(@Valid @RequestBody LicensePlateChangeRequest licensePlateChangeRequest,
