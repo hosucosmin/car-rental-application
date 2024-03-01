@@ -47,7 +47,7 @@ public class CarServiceImpl implements CarService {
         if (!alreadyAddedCar) {
             car.setExtId(UUID.randomUUID().toString());
             carRepository.save(car);
-            return ok("Success");
+            return ok("Successfully saved the car entity.");
         }
         return internalServerError().body("The car is already registered. Please try again!");
     }
@@ -63,13 +63,14 @@ public class CarServiceImpl implements CarService {
             return ResponseEntity.ok("Successfully updated driver entity");
         }
 
-        return internalServerError().body("There has been an error");
+        return internalServerError().body("There has been an error updating the car entity. Please try again!");
     }
 
     @Override
-    public void deleteCar(CarDTO carDTO) {
-        Optional<Car> car = carRepository.findByExtId(carDTO.getExtId());
+    public ResponseEntity<String> deleteCar(String extId) {
+        Optional<Car> car = carRepository.findByExtId(extId);
         car.ifPresent(carRepository::delete);
+        return ok().body("Successfully deleted the car entity.");
     }
 
     private Car updateCar(Car car, CarDTO carDTO) {

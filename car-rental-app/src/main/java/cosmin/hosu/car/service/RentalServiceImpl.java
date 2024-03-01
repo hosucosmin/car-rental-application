@@ -47,7 +47,7 @@ public class RentalServiceImpl implements RentService {
     }
 
     @Override
-    public ResponseEntity<String> finishARide(Map<String, String> json) {
+    public ResponseEntity<String> endRent(Map<String, String> json) {
         String rentExtId = json.get("rentExtId");
         Optional<Rent> optionalRent = rentalRepository.findByExtId(rentExtId);
         if (optionalRent.isPresent()) {
@@ -104,6 +104,7 @@ public class RentalServiceImpl implements RentService {
                 .driver(driver).car(car)
                 .rentExtId(UUID.randomUUID().toString())
                 .build();
+
         rentalRepository.save(rent);
     }
 

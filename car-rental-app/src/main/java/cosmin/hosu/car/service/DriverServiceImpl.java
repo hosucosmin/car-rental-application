@@ -47,7 +47,7 @@ public class DriverServiceImpl implements DriverService {
         Driver driverEntity = Optional.ofNullable(driverDTO.getPhone())
                 .flatMap(driverRepository::findByPhoneNumber)
                 .map(driver -> updateDriver(driver, driverDTO))
-                .orElse(null);
+                .orElseThrow(() -> new DriverNotFoundException("Couldn't find any driver with the provided phone number"));
 
         if (driverEntity != null) {
             return ResponseEntity.ok("Successfully updated driver entity");

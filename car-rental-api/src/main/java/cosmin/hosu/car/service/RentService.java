@@ -10,7 +10,7 @@ import java.util.Map;
 public interface RentService {
 	ResponseEntity<String> registerNewEntry(RentRequestDTO rentRequestDTO);
 
-	ResponseEntity<String> finishARide(Map<String, String> json);
+	ResponseEntity<String> endRent(Map<String, String> json);
 
 	void deleteARent(Map<String, String> json);
 

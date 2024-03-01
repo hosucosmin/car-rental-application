@@ -24,6 +24,6 @@ public interface CarController {
 	@PutMapping("/update")
 	ResponseEntity<String> updateCar(@Valid @RequestBody CarDTO carDTO);
 
-	@DeleteMapping
-	void deleteCar(@RequestBody CarDTO carDTO);
+	@DeleteMapping("/delete/{extId}")
+	ResponseEntity<String> deleteCar(@NotBlank @PathVariable("extId") String extId);
 }

@@ -2,11 +2,13 @@ package cosmin.hosu.car.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Data
 @Table(name = "CAR")
@@ -43,3 +45,5 @@ public class Car {
     @Column(name = "EXT_ID")
     private String extId;
 }
+
+

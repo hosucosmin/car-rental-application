@@ -42,9 +42,9 @@ public class CarControllerImpl implements CarController {
 		return carService.updateCar(carDTO);
 	}
 
-	@DeleteMapping
+	@DeleteMapping("/delete/{extId}")
 	@Override
-	public void deleteCar(@RequestBody CarDTO carDTO) {
-		carService.deleteCar(carDTO);
+	public ResponseEntity<String> deleteCar(@PathVariable("extId") String extId) {
+		return carService.deleteCar(extId);
 	}
 }

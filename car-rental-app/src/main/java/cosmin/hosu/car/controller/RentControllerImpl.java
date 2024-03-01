@@ -46,12 +46,12 @@ public class RentControllerImpl implements RentController {
 	@PutMapping("/end-rent")
 	@Override
 	public ResponseEntity<String> endRent(@RequestBody Map<String, String> json) {
-		return rentService.finishARide(json);
+		return rentService.endRent(json);
 	}
 
 	@DeleteMapping
 	@Override
-	public void deleteRent(@RequestBody Map<String, String> json) {
+	public void deleteRent(@RequestBody Map <String, String> json) {
 		rentService.deleteARent(json);
 	}
 
